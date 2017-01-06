@@ -13,9 +13,8 @@ else:
     website = str(sys.argv[1])
     domain = website.replace("https://","")
     domain = domain.replace("www.","")
-#need something to clean up the input, i.e. add/remove http/https if present
 
-#Testing vars
+#Intro message
 print("SAN Scan running for Website:", website, "(Raw domain:", domain, ")\n")
 
 
@@ -44,17 +43,14 @@ def getLinks(website):
             #print(link[2])
             subdomains.append(link[2]) #add subdomain to list
 
-        #else:
+        #else: #debug text
             #print("Link found not part of original domain")
 
-#getCert(domain)
-
-#Call function and add subdomains to list for scanning
+#Call function to add subdomains to list for scanning
 getLinks(website)
 
 #Clean up discovered subdomain list
 subdomains = list(set(subdomains)) #Use a set to take unique items from list
-
 
 #Scan list of subdomains for SAN certs
 for s in subdomains:
