@@ -1,6 +1,5 @@
 # sanscan-py
 Scan website for sub domains, then check each sub domain for SAN certificates.
-
 <BR><BR>
 
 **Useage example:**<BR>
