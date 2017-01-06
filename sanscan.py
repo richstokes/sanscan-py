@@ -8,7 +8,7 @@ import lxml.html
 
 
 if len(sys.argv) < 2:
-    quit("instructions here")
+    quit("Useage example: \n ./sanscan.py https://www.github.com \n")
 else:
     website = str(sys.argv[1])
     domain = website.replace("https://","")
