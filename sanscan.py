@@ -9,6 +9,8 @@ import lxml.html
 
 if len(sys.argv) < 2:
     quit("Useage example: \n ./sanscan.py https://www.github.com \n")
+elif "https" not in str(sys.argv[1]):
+    quit("Error: Please specify https website as first argument. \n\nUseage example: \n ./sanscan.py https://www.github.com \n")
 else:
     website = str(sys.argv[1])
     domain = website.replace("https://","")
