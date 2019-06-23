@@ -7,7 +7,7 @@ import lxml.html
 
 
 if len(sys.argv) < 2:
-    quit("Useage example: \n ./sanscan.py https://www.github.com \n")
+    quit("Usage example: \n ./sanscan.py https://www.github.com \n")
 elif "https" not in str(sys.argv[1]):
     quit("Error: Please specify https website as first argument. \n\nUseage example: \n ./sanscan.py https://www.github.com \n")
 else:
@@ -27,26 +27,29 @@ def getCert(hostname):
     try:
         s.connect((hostname, 443))
         cert = s.getpeercert()
-    except:
-        print("SSL Connection error")
-    try:
-        altName = cert['subjectAltName'] #get the SAN piece from the cert
-        altName = [x[1] for x in altName] #get the values from the DNS field
-        altName = ' '.join((altName)) #make Tuple nice to read
-        print("Listing Subject Alternative Names found for", hostname)
-        print(altName, "\n")
-    except:
-        print("Trying next")
+        try:
+            altName = cert['subjectAltName'] #get the SAN piece from the cert
+            altName = [x[1] for x in altName] #get the values from the DNS field
+            altName = ' '.join((altName)) #make Tuple nice to read
+            print("Listing Subject Alternative Names found for:", hostname)
+            print(altName, "\n")
+        except Exception as e:
+            print(e)
+    except Exception as e:
+        # print("SSL Connection error")
+        # print(e)
+        return
+
 
 #Function to connect via HTTP and find unique subdomains within the HTML source
 def getLinks(website):
     global subdomains
     subdomains = []
-#configure urllib context
+    #configure urllib context
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     context.check_hostname=False
     context.verify_mode=ssl.CERT_NONE
-#configure request details
+    #configure request details
     req = urllib.request.Request(
     website,
     data=None,
@@ -62,8 +65,8 @@ def getLinks(website):
             #print(link[2])
             subdomains.append(link[2]) #add subdomain to list
 
-        #else: #debug text
-            #print("Link found not part of original domain")
+        # else: #debug text
+            # print("Warning: Additional links found not part of original domain")
 
 
 
@@ -71,7 +74,9 @@ def getLinks(website):
 getLinks(website)
 
 #Clean up discovered subdomain list
+subdomains.append(domain)
 subdomains = list(set(subdomains)) #Use a set to take unique items from list
+# print(subdomains)
 
 #Scan list of subdomains for SAN certs
 for s in subdomains:
